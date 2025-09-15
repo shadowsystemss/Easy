@@ -10,9 +10,9 @@ public class DataBase : IDataBase
     protected ReaderWriterLockSlim _locker;
 
     public DataBase(IDBConnector connector)
-        : this(connector, null) { }
+        : this(connector.Connect(), null) { }
 
-    public DataBase(IDBConnector connector, ReaderWriterLockSlim? locker) 
+    public DataBase(IDBConnector connector, ReaderWriterLockSlim locker)
         : this(connector.Connect(), locker) { }
 
     public DataBase(DbConnection connection, ReaderWriterLockSlim? locker)

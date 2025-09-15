@@ -1,4 +1,6 @@
-﻿namespace CommandSystem.Abstractions;
+﻿using CommandSystem.Abstractions;
+
+namespace CommandSystem.Commands;
 
 public abstract class CommandManager : ITextCommand
 {

@@ -1,5 +1,5 @@
-﻿using EasyDB.Abstractions;
-using System.Data.Common;
+﻿using System.Data.Common;
+using EasyDB.Abstractions;
 
 namespace EasyDB.Extensions;
 
@@ -28,7 +28,4 @@ public static class DBExtensions
         using IDBContext ctx = db.Read();
         return ctx.ReaderWrapper(sql, action);
     }
-
-    public static T ReaderWrapper<T>(this IDBContext context, string sql, Func<DbDataReader, IDBContext, T> action)
-        => context.ReaderWrapper(sql, reader => action(reader, context));
 }

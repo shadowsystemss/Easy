@@ -1,23 +1,42 @@
-﻿using System.Data.Common;
+﻿using System.Data;
+using System.Data.Common;
 
 namespace EasyDB.Extensions;
 
 public static class DBCommandExtensions
 {
-    public static DbParameter AddParameter(this DbCommand command, string name, object? value)
+    public static DbParameter CreateParameter(this DbCommand command, string name)
     {
         DbParameter parameter = command.CreateParameter();
         if (name.Length > 0 && name[0] != '@')
             name = '@' + name;
         parameter.ParameterName = name;
-        parameter.Value = value;
         command.Parameters.Add(parameter);
+        return parameter;
+    }
+    public static DbParameter AddParameter(this DbCommand command, string name, object? value)
+    {
+        DbParameter parameter = command.CreateParameter(name);
+        parameter.Value = value ?? DBNull.Value;
+        return parameter;
+    }
+
+    public static DbParameter AddParameter(this DbCommand command, string name, DbType type)
+    {
+        DbParameter parameter = command.CreateParameter(name);
+        parameter.DbType = type;
         return parameter;
     }
 
     public static DbCommand With(this DbCommand command, string name, object? value)
     {
         command.AddParameter(name, value);
+        return command;
+    }
+
+    public static DbCommand With(this DbCommand command, string name, DbType type)
+    {
+        command.AddParameter(name, type);
         return command;
     }
 

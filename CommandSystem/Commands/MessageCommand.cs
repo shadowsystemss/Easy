@@ -2,17 +2,11 @@
 
 namespace CommandSystem.Commands
 {
-    public class MessageCommand : IMessageCommand, ITextCommand
+    public class MessageCommand(string message, ICommand? command = null) : IMessageCommand, ITextCommand
     {
-        protected ICommand? _step;
+        protected ICommand? _step = command;
 
-        public MessageCommand(string message, ICommand? command = null)
-        {
-            Message = message;
-            _step = command;
-        }
-
-        public string Message { get; init; }
+        public string Message { get; } = message;
 
         public ICommand? Execute(string? text)
         {

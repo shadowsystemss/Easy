@@ -2,36 +2,38 @@
 using EasyDB.Abstractions;
 using EasyDB.Extensions;
 
-namespace EasyDB.Advanced;
+namespace EasyDB.Advanced.Tables;
 
-public class SetDBTable : IDBTable // Класс для упращения создания списков
+public class SetDBTable(IDataBase db, string tableName) // Класс для упрощенья создания списков
 {
-    protected readonly IDataBase _db;
-    protected readonly string _tableName;
-
-    public SetDBTable(IDataBase db, string tableName)
-    {
-        _db = db;
-        _tableName = tableName;
-    }
+    protected readonly IDataBase _db = db;
+    protected readonly string _tableName = tableName;
 
     public void Create() => _db.Write($"""
-        CREATE TABLE {_tableName} (
+        CREATE TABLE IF NOT EXISTS {_tableName} (
             id INTEGER PRIMARY KEY,
             text TEXT UNIQUE NOT NULL
         )
         """);
 
-    public void Drop() => _db.Write(_tableName);
+    public void Drop() => _db.Write($"DROP TABLE IF EXISTS {_tableName}");
 
     public virtual void Fill() { }
 
     public void Add(string text, int? id = null)
     {
+        using IDBContext context = _db.Write();
+        using DbCommand command = context
+            .CreateCommand()
+            .With("@text", text);
         if (id.HasValue)
-            _db.Write($"REPLACE INTO {_tableName}(id, text) VALUES({id.Value}, '{text.Replace("'", "''")}')");
+        {
+            command.CommandText = $"REPLACE INTO {_tableName}(id, text) VALUES(@id, @text)";
+            command.AddParameter(text, id.Value);
+        }
         else
-            _db.Write($"INSERT OR IGNORE INTO {_tableName}(text) VALUES('{text.Replace("'", "''")}')");
+            _db.Write($"INSERT OR IGNORE INTO {_tableName}(text) VALUES(@text)");
+        command.ExecuteNonQuery();
     }
 
     public void Add(IList<string> data)
@@ -53,7 +55,8 @@ public class SetDBTable : IDBTable // Класс для упращения со�
     public void Replace(IList<string> data)
     {
         using IDBContext context = _db.Write();
-        using DbCommand command = context.CreateCommand($"REPLACE INTO {_tableName}(id, text) VALUES(@id, @text)");
+        using DbCommand command = context
+            .CreateCommand($"REPLACE INTO {_tableName}(id, text) VALUES(@id, @text)");
 
         DbParameter idParameter = command.CreateParameter();
         idParameter.ParameterName = "@id";
@@ -72,13 +75,22 @@ public class SetDBTable : IDBTable // Класс для упращения со�
     }
 
     public void Update(int id, string text)
-        => _db.Write($"UPDATE {_tableName} SET text = '{text.Replace("'", "''")}' WHERE id = {id}");
+    {
+        using IDBContext context = _db.Write();
+        using DbCommand command = context
+            .CreateCommand($"UPDATE {_tableName} SET text = @text WHERE id = @id")
+            .With("@id", id)
+            .With("@text", text);
+        command.ExecuteNonQuery();
+    }
 
     public void RemoveById(int id)
         => _db.Write($"DELETE FROM {_tableName} WHERE id = {id}");
 
     public void RemoveByText(string text)
-        => _db.Write($"DELETE FROM {_tableName} WHERE text = '{text.Replace("'", "''")}'");
+    {
+        _db.Write($"DELETE FROM {_tableName} WHERE text = @text");
+    }
 
     public string? GetTextById(int id)
         => (string?)_db.Scalar($"SELECT text FROM {_tableName} WHERE id = {id}");
@@ -90,10 +102,10 @@ public class SetDBTable : IDBTable // Класс для упращения со�
         => _db.ReaderWrapper($"SELECT id FROM {_tableName} LIMIT {limit} OFFSET {offset}", reader => reader.GetScalars<int>().ToList());
 
     public List<string>? GetList(int limit = 100, int offset = 0)
-        => _db.ReaderWrapper($"SELECT text FROM {_tableName} LIMIT {limit} OFFSET {offset}", reader=>reader.GetScalars<string>().ToList());
+        => _db.ReaderWrapper($"SELECT text FROM {_tableName} LIMIT {limit} OFFSET {offset}", reader => reader.GetScalars<string>().ToList());
 
     public Dictionary<int, string>? GetDictionary(int limit = 100, int offset = 0)
-        => _db.ReaderWrapper($"SELECT * FROM {_tableName} LIMIT {limit} OFFSET {offset}", DBReaderExtensions.GetDictionary<int,string>);
+        => _db.ReaderWrapper($"SELECT * FROM {_tableName} LIMIT {limit} OFFSET {offset}", DBReaderExtensions.GetDictionary<int, string>);
 
     public int Count()
         => Convert.ToInt32(_db.Scalar("SELECT COUNT(*) FROM " + _tableName) ?? 0);

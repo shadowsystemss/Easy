@@ -9,26 +9,15 @@ namespace EasyResponse.Models
         public const int Warning = 2;
     }
 
-    public record Response<T> : Response
+    public record Response<T>(int Status, string? Message, T Data) : Response(Status, Message)
     {
-        public T Data { get; init; }
-        public Response(int Status, string? Message, T data) : base(Status, Message) => Data = data;
         public Response<O> As<O>(Func<T, O> converter) => new(Status, Message, converter(Data));
     }
 
-    public record ErrorResponse : Response, IErrorResponse
-    {
-        public Exception? Error { get; init; }
-        public ErrorResponse(int Status, string? Message, Exception? exception) : base(Status, Message)
-            => Error = exception;
-    }
+    public record ErrorResponse(int Status, string? Message, Exception? Error) : Response(Status, Message), IErrorResponse;
 
-    public record FullResponse<T> : Response<T>, IErrorResponse
+    public record FullResponse<T>(int Status, string? Message, T Data, Exception? Error) : Response<T>(Status, Message, Data), IErrorResponse
     {
-        public Exception? Error { get; init; }
-        public FullResponse(int Status, string? Message, T data, Exception? exception) : base(Status, Message, data)
-            => Error = exception;
-
         public new FullResponse<O> As<O>(Func<T, O> converter) => new(Status, Message, converter(Data), Error);
         public async Task<FullResponse<O>> As<O>(Func<T, CancellationToken, Task<O>> converter, CancellationToken cancel) => new(Status, Message, await converter(Data, cancel), Error);
     }

@@ -2,19 +2,14 @@
 using EasyDB.Abstractions;
 using EasyDB.Models;
 
-namespace EasyDB.Services;
+namespace EasyDB.Advanced.Services;
 
-public class OneTimeDatabase : IDataBase
+public class OneTimeDatabase(Func<DbConnection> connectionFactory) : IDataBase
 {
-    protected Func<DbConnection> _connectionFactory;
+    protected Func<DbConnection> _connectionFactory = connectionFactory;
 
     public OneTimeDatabase(IDBConnector connector)
         : this(connector.Connect) { }
-
-    public OneTimeDatabase(Func<DbConnection> connectionFactory)
-    {
-        _connectionFactory = connectionFactory;
-    }
 
     public void Dispose() => GC.SuppressFinalize(this);
 

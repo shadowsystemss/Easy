@@ -1,11 +1,9 @@
 ﻿using EasyDB.Abstractions;
 
-namespace EasyDB.Advanced;
+namespace EasyDB.Advanced.Tables;
 
-public class EnumDBTable<T> : SetDBTable where T : Enum
+public class EnumDBTable<T>(IDataBase db, string tableName = nameof(T)) : SetDBTable(db, tableName) where T : Enum
 {
-    public EnumDBTable(IDataBase db, string tableName = nameof(T)) : base(db, tableName) { }
-
     public override void Fill()
     {
         foreach (T value in Enum.GetValues(typeof(T)))

@@ -4,5 +4,5 @@ namespace EasyDB.Abstractions;
 
 public interface IDBConnector
 {
-    public DbConnection Connect();
+    DbConnection Connect();
 }

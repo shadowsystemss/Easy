@@ -3,13 +3,9 @@ using EasyDB.Abstractions;
 
 namespace EasyDB.Models;
 
-public class UpgradeableDBContext : DBContext, IUpgradeableDBContext
+public class UpgradeableDBContext(IDataBase db, DbConnection connection, Action? dispose) : DBContext(connection, dispose), IUpgradeableDBContext
 {
-    protected IDataBase _db;
-    public UpgradeableDBContext(IDataBase db, DbConnection connection, Action? dispose) : base(connection, dispose)
-    {
-        _db = db;
-    }
+    protected IDataBase _db = db;
 
     public IDBContext Write() => _db.Write();
 
