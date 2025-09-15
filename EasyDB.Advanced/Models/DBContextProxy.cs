@@ -1,5 +1,5 @@
-﻿using System.Data.Common;
-using EasyDB.Abstractions;
+﻿using EasyDB.Abstractions;
+using System.Data.Common;
 
 namespace EasyDB.Advanced.Models;
 

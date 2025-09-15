@@ -1,6 +1,6 @@
-﻿using System.Data.Common;
-using EasyDB.Abstractions;
+﻿using EasyDB.Abstractions;
 using EasyDB.Models;
+using System.Data.Common;
 
 namespace EasyDB.Services;
 
