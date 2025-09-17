@@ -1,5 +1,6 @@
 ﻿using EasyDB.Abstractions;
 using EasyDB.Extensions;
+using EasyDB.Models;
 using System.Data.Common;
 
 namespace EasyDB.Advanced.Tables;
@@ -89,7 +90,9 @@ public class SetDBTable(IDataBase db, string tableName) // Класс для у�
 
     public void RemoveByText(string text)
     {
-        _db.Write($"DELETE FROM {_tableName} WHERE text = @text");
+        using IDBContext context = _db.Write();
+        using DbCommand command = context.CreateCommand($"DELETE FROM {_tableName} WHERE text = @text").With("@text", text);
+        command.ExecuteNonQuery();
     }
 
     public string? GetTextById(int id)

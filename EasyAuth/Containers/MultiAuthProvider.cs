@@ -6,7 +6,7 @@ public class MultiAuthProvider : IAuthorizeProvider
 {
     private readonly IAuthorizeProvider[] _providers;
 
-    public MultiAuthProvider(IEnumerable<IAuthorizeProvider> providers) => _providers = providers.ToArray();
+    public MultiAuthProvider(IEnumerable<IAuthorizeProvider> providers) => _providers = [.. providers];
 
     public MultiAuthProvider(params IAuthorizeProvider[] providers) => _providers = providers;
     public async Task<bool> AuthorizeTestAsync(CancellationToken cancel)

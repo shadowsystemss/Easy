@@ -14,7 +14,7 @@ public static class DBReaderExtensions
         => GetScalars(reader, x => x.GetFieldValue<T>(0));
 
     public static List<T> GetList<T>(this DbDataReader reader)
-        => GetScalars<T>(reader).ToList();
+        => [.. GetScalars<T>(reader)];
 
     public static Dictionary<TKey, TValue>? GetDictionary<TKey, TValue>(this DbDataReader reader) where TKey : notnull
     {
