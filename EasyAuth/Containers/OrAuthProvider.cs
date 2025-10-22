@@ -2,13 +2,13 @@
 
 namespace EasyAuth.Containers;
 
-public class MultiAuthProvider : IAuthorizeProvider
+public class OrAuthProvider : IAuthorizeProvider
 {
     private readonly IAuthorizeProvider[] _providers;
 
-    public MultiAuthProvider(IEnumerable<IAuthorizeProvider> providers) => _providers = [.. providers];
+    public OrAuthProvider(IEnumerable<IAuthorizeProvider> providers) => _providers = [.. providers];
 
-    public MultiAuthProvider(params IAuthorizeProvider[] providers) => _providers = providers;
+    public OrAuthProvider(params IAuthorizeProvider[] providers) => _providers = providers;
     public async Task<bool> AuthorizeTestAsync(CancellationToken cancel)
     {
         var tasks = new List<Task<bool>>(_providers.Length);
