@@ -1,7 +1,7 @@
-﻿using EasyDB.Abstractions;
-using EasyDB.Advanced.Models;
+﻿using EasyDb.Abstractions;
+using EasyDb.Advanced.Models;
 
-namespace EasyDB.Advanced.Services;
+namespace EasyDb.Advanced.Services;
 
 public class DBMonopolyContainer(IDataBase db) : IDataBase
 {

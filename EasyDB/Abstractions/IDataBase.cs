@@ -1,4 +1,4 @@
-﻿namespace EasyDB.Abstractions;
+﻿namespace EasyDb.Abstractions;
 
 public interface IDataBase : IDisposable
 {

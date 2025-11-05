@@ -1,6 +1,6 @@
 ﻿using System.Data.Common;
 
-namespace EasyDB.Models;
+namespace EasyDb.Models;
 
 public class TransactionDBContext(DbConnection connection, Action? dispose) : DBContext(connection, dispose)
 {

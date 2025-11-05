@@ -1,8 +1,8 @@
-﻿using EasyDB.Abstractions;
-using EasyDB.Models;
+﻿using EasyDb.Abstractions;
+using EasyDb.Models;
 using System.Data.Common;
 
-namespace EasyDB.Advanced.Services;
+namespace EasyDb.Advanced.Services;
 
 public class OneTimeDatabase(Func<DbConnection> connectionFactory) : IDataBase
 {

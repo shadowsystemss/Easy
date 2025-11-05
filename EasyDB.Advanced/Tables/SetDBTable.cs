@@ -1,9 +1,9 @@
-﻿using EasyDB.Abstractions;
-using EasyDB.Extensions;
-using EasyDB.Models;
+﻿using EasyDb.Abstractions;
+using EasyDb.Extensions;
+using EasyDb.Models;
 using System.Data.Common;
 
-namespace EasyDB.Advanced.Tables;
+namespace EasyDb.Advanced.Tables;
 
 public class SetDBTable(IDataBase db, string tableName) // Класс для упрощенья создания списков
 {

@@ -1,6 +1,6 @@
 ﻿using System.Data.Common;
 
-namespace EasyDB.Extensions;
+namespace EasyDb.Extensions;
 
 public static class DBReaderExtensions
 {

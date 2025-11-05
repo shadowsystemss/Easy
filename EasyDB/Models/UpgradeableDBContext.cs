@@ -1,7 +1,7 @@
-﻿using EasyDB.Abstractions;
+﻿using EasyDb.Abstractions;
 using System.Data.Common;
 
-namespace EasyDB.Models;
+namespace EasyDb.Models;
 
 public class UpgradeableDBContext(IDataBase db, DbConnection connection, Action? dispose) : DBContext(connection, dispose), IUpgradeableDBContext
 {

@@ -1,7 +1,7 @@
-﻿using EasyDB.Abstractions;
+﻿using EasyDb.Abstractions;
 using System.Data.Common;
 
-namespace EasyDB.Advanced.Models;
+namespace EasyDb.Advanced.Models;
 
 public class DBContextProxy(IDBContext context, Action? dispose) : IDBContext
 {

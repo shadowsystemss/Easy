@@ -1,8 +1,8 @@
-﻿using EasyDB.Abstractions;
-using EasyDB.Models;
+﻿using EasyDb.Abstractions;
+using EasyDb.Models;
 using System.Data.Common;
 
-namespace EasyDB.Services;
+namespace EasyDb.Services;
 
 public class DataBase : IDataBase
 {

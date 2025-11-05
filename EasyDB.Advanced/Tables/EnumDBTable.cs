@@ -1,6 +1,6 @@
-﻿using EasyDB.Abstractions;
+﻿using EasyDb.Abstractions;
 
-namespace EasyDB.Advanced.Tables;
+namespace EasyDb.Advanced.Tables;
 
 public class EnumDBTable<T>(IDataBase db, string tableName = nameof(T)) : SetDBTable(db, tableName) where T : Enum
 {
