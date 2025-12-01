@@ -19,6 +19,6 @@ namespace EasyResponse.Models
     public record FullResponse<T>(int Status, string? Message, T Data, Exception? Error) : Response<T>(Status, Message, Data), IErrorResponse
     {
         public new FullResponse<O> As<O>(Func<T, O> converter) => new(Status, Message, converter(Data), Error);
-        public async Task<FullResponse<O>> As<O>(Func<T, CancellationToken, Task<O>> converter, CancellationToken cancel) => new(Status, Message, await converter(Data, cancel), Error);
+        public async Task<FullResponse<O>> As<O>(Func<T, CancellationToken, Task<O>> converter, CancellationToken ct) => new(Status, Message, await converter(Data, ct), Error);
     }
 }

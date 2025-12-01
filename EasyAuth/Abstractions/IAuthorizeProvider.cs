@@ -2,5 +2,5 @@
 
 public interface IAuthorizeProvider
 {
-    Task<bool> AuthorizeTestAsync(CancellationToken cancel);
+    Task<bool> AuthorizeTestAsync(CancellationToken ct);
 }

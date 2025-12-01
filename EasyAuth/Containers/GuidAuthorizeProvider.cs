@@ -7,6 +7,6 @@ public class GuidAuthorizeProvider(IGuidProvider guidProvider, IGuidAuthorizePro
     private readonly IGuidProvider _guidProvider = guidProvider;
     private readonly IGuidAuthorizeProvider _guidAuthorizeProvider = guidAuthorizeProvider;
 
-    public async Task<bool> AuthorizeTestAsync(CancellationToken cancel)
-        => await _guidAuthorizeProvider.AuthorizeTestAsync(await _guidProvider.GetGuidAsync(cancel), cancel);
+    public async Task<bool> AuthorizeTestAsync(CancellationToken ct)
+        => await _guidAuthorizeProvider.AuthorizeTestAsync(await _guidProvider.GetGuidAsync(ct), ct);
 }

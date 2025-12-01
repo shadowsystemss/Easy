@@ -10,13 +10,13 @@ public class TemporaryAuthProvider(IAuthorizeProvider authProvider, TimeSpan dur
     private readonly TimeSpan _checking = checking;
     private readonly IDateKeeper _dateKeeper = lastDateKeeper ?? new SimpleDateKeeper();
 
-    public async Task<bool> AuthorizeTestAsync(CancellationToken cancel)
+    public async Task<bool> AuthorizeTestAsync(CancellationToken ct)
     {
         Task<bool>? task = null;
         TimeSpan delta = DateTime.Now - await _dateKeeper.GetDate();
 
         if (delta > _checking)
-            task = Update(cancel);
+            task = Update(ct);
 
         if (delta < _duration)
             return true;
@@ -27,9 +27,9 @@ public class TemporaryAuthProvider(IAuthorizeProvider authProvider, TimeSpan dur
         return await task;
     }
 
-    private async Task<bool> Update(CancellationToken cancel)
+    private async Task<bool> Update(CancellationToken ct)
     {
-        if (!await _authProvider.AuthorizeTestAsync(cancel))
+        if (!await _authProvider.AuthorizeTestAsync(ct))
             return false;
 
         await _dateKeeper.SetDate(DateTime.Now);

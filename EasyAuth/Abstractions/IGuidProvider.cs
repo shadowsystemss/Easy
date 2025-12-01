@@ -2,5 +2,5 @@
 
 public interface IGuidProvider
 {
-    Task<Guid> GetGuidAsync(CancellationToken cancellationToken);
+    Task<Guid> GetGuidAsync(CancellationToken ct);
 }

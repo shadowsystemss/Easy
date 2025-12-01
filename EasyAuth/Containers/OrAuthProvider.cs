@@ -9,11 +9,11 @@ public class OrAuthProvider : IAuthorizeProvider
     public OrAuthProvider(IEnumerable<IAuthorizeProvider> providers) => _providers = [.. providers];
 
     public OrAuthProvider(params IAuthorizeProvider[] providers) => _providers = providers;
-    public async Task<bool> AuthorizeTestAsync(CancellationToken cancel)
+    public async Task<bool> AuthorizeTestAsync(CancellationToken ct)
     {
         var tasks = new List<Task<bool>>(_providers.Length);
         foreach (IAuthorizeProvider provider in _providers)
-            tasks.Add(provider.AuthorizeTestAsync(cancel));
+            tasks.Add(provider.AuthorizeTestAsync(ct));
 
         while (tasks.Count > 0)
         {

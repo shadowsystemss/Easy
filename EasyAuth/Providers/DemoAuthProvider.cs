@@ -6,6 +6,6 @@ public class DemoAuthProvider(DateTime term) : IAuthorizeProvider
 {
     private readonly DateTime _term = term;
 
-    public Task<bool> AuthorizeTestAsync(CancellationToken cancel)
+    public Task<bool> AuthorizeTestAsync(CancellationToken ct)
         => Task.FromResult(DateTime.Now < _term);
 }

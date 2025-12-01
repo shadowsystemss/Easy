@@ -2,5 +2,5 @@
 
 public interface IGuidAuthorizeProvider
 {
-    Task<bool> AuthorizeTestAsync(Guid guid, CancellationToken cancel);
+    Task<bool> AuthorizeTestAsync(Guid guid, CancellationToken ct);
 }

@@ -7,11 +7,11 @@ public class NetworkGuidListAuthProvider(HttpClient httpClient, string url) : IG
     private readonly HttpClient _httpClient = httpClient;
     private readonly string _url = url;
 
-    public async Task<bool> AuthorizeTestAsync(Guid UID, CancellationToken cancel)
+    public async Task<bool> AuthorizeTestAsync(Guid UID, CancellationToken ct)
     {
         try
         {
-            string data = await _httpClient.GetStringAsync(_url, cancel);
+            string data = await _httpClient.GetStringAsync(_url, ct);
             return data.Split('\n').Contains(UID.ToString());
         }
         catch

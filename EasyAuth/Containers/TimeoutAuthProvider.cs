@@ -7,10 +7,10 @@ public class TimeoutAuthProvider(IAuthorizeProvider authProvider, TimeSpan timeo
     private readonly IAuthorizeProvider _authProvider = authProvider;
     private readonly TimeSpan _timeout = timeout;
 
-    public async Task<bool> AuthorizeTestAsync(CancellationToken cancel)
+    public async Task<bool> AuthorizeTestAsync(CancellationToken ct)
     {
-        Task<bool> task = _authProvider.AuthorizeTestAsync(cancel);
-        await Task.WhenAny(task, Task.Delay(_timeout, cancel));
+        Task<bool> task = _authProvider.AuthorizeTestAsync(ct);
+        await Task.WhenAny(task, Task.Delay(_timeout, ct));
 
         return task.IsCompletedSuccessfully && task.Result;
     }
