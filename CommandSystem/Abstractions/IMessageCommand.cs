@@ -1,7 +1,6 @@
-﻿namespace CommandSystem.Abstractions
+﻿namespace CommandSystem.Abstractions;
+
+public interface IMessageCommand : ICommand
 {
-    public interface IMessageCommand : ICommand
-    {
-        public string? Message { get; }
-    }
+    string? Message { get; }
 }

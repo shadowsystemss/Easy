@@ -1,7 +1,6 @@
-﻿namespace CommandSystem.Abstractions
+﻿namespace CommandSystem.Abstractions;
+
+public interface ICommand
 {
-    public interface ICommand
-    {
-        public ICommand? Execute();
-    }
+    ICommand? Execute();
 }
