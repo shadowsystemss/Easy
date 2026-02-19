@@ -1,15 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36121.58
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11512.155 d18.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyDB", "EasyDB\EasyDB.csproj", "{A6A3CC39-DB1C-2D9A-6B5C-054A547BC310}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyDb", "EasyDb\EasyDb.csproj", "{A6A3CC39-DB1C-2D9A-6B5C-054A547BC310}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyResponse", "EasyResponse\EasyResponse.csproj", "{E3E4B3CB-A0F5-B133-F4AC-7AB1BFBB696F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandSystem", "CommandSystem\CommandSystem.csproj", "{1C86701F-E54B-634B-CE81-3C7924446D26}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyDB.Advanced", "EasyDB.Advanced\EasyDB.Advanced.csproj", "{75B22B9A-2808-80CE-E79F-6196C5BB3F1D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyDb.Advanced", "EasyDb.Advanced\EasyDb.Advanced.csproj", "{75B22B9A-2808-80CE-E79F-6196C5BB3F1D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyAuth", "EasyAuth\EasyAuth.csproj", "{A8FA075F-C608-501A-888F-5A296DAF83A9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{75B22B9A-2808-80CE-E79F-6196C5BB3F1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75B22B9A-2808-80CE-E79F-6196C5BB3F1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75B22B9A-2808-80CE-E79F-6196C5BB3F1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8FA075F-C608-501A-888F-5A296DAF83A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8FA075F-C608-501A-888F-5A296DAF83A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8FA075F-C608-501A-888F-5A296DAF83A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8FA075F-C608-501A-888F-5A296DAF83A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
