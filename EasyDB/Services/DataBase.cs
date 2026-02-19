@@ -9,10 +9,10 @@ public class DataBase : IDataBase
     protected DbConnection _connection;
     protected ReaderWriterLockSlim _locker;
 
-    public DataBase(IDBConnector connector)
+    public DataBase(IDbConnector connector)
         : this(connector.Connect(), null) { }
 
-    public DataBase(IDBConnector connector, ReaderWriterLockSlim locker)
+    public DataBase(IDbConnector connector, ReaderWriterLockSlim locker)
         : this(connector.Connect(), locker) { }
 
     public DataBase(DbConnection connection, ReaderWriterLockSlim? locker)
@@ -30,27 +30,27 @@ public class DataBase : IDataBase
         GC.SuppressFinalize(this);
     }
 
-    public IDBContext Read()
+    public IDbContext Read()
     {
         _locker.EnterReadLock();
-        return new DBContext(_connection, _locker.ExitReadLock);
+        return new DbContext(_connection, _locker.ExitReadLock);
     }
 
-    public IDBContext Write()
+    public IDbContext Write()
     {
         _locker.EnterWriteLock();
-        return new DBContext(_connection, _locker.ExitWriteLock);
+        return new DbContext(_connection, _locker.ExitWriteLock);
     }
 
-    public IUpgradeableDBContext UpgradeableRead()
+    public IUpgradeableDbContext UpgradeableRead()
     {
         _locker.EnterUpgradeableReadLock();
-        return new UpgradeableDBContext(this, _connection, _locker.ExitUpgradeableReadLock);
+        return new UpgradeableDbContext(this, _connection, _locker.ExitUpgradeableReadLock);
     }
 
-    public IDBContext Transaction()
+    public IDbContext Transaction()
     {
         _locker.EnterWriteLock();
-        return new TransactionDBContext(_connection, _locker.ExitWriteLock);
+        return new TransactionDbContext(_connection, _locker.ExitWriteLock);
     }
 }

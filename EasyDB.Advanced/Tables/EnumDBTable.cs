@@ -2,7 +2,7 @@
 
 namespace EasyDb.Advanced.Tables;
 
-public class EnumDBTable<T>(IDataBase db, string tableName = nameof(T)) : SetDBTable(db, tableName) where T : Enum
+public class EnumDbTable<T>(IDataBase db, string tableName = nameof(T)) : SetDbTable(db, tableName) where T : Enum
 {
     public override void Fill()
     {

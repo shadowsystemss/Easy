@@ -3,12 +3,13 @@ using System.Data.Common;
 
 namespace EasyDb.Extensions;
 
-public static class DBCommandExtensions
+public static class DbCommandExtensions
 {
     public static DbParameter CreateParameter(this DbCommand command, string name)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
         DbParameter parameter = command.CreateParameter();
-        if (name.Length > 0 && name[0] != '@')
+        if (name[0] != '@')
             name = '@' + name;
         parameter.ParameterName = name;
         command.Parameters.Add(parameter);

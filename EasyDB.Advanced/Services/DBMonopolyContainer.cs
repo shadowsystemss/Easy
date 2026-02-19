@@ -3,7 +3,7 @@ using EasyDb.Advanced.Models;
 
 namespace EasyDb.Advanced.Services;
 
-public class DBMonopolyContainer(IDataBase db) : IDataBase
+public class DbMonopolyContainer(IDataBase db) : IDataBase
 {
     private readonly IDataBase _db = db;
     private readonly ReaderWriterLockSlim _locker = new();
@@ -14,7 +14,7 @@ public class DBMonopolyContainer(IDataBase db) : IDataBase
         GC.SuppressFinalize(this);
     }
 
-    public IDBContext Read()
+    public IDbContext Read()
     {
         _locker.EnterReadLock();
         var context = _db.Read();
@@ -22,7 +22,7 @@ public class DBMonopolyContainer(IDataBase db) : IDataBase
         return context;
     }
 
-    public IDBContext Transaction()
+    public IDbContext Transaction()
     {
         _locker.EnterReadLock();
         var context = _db.Transaction();
@@ -30,7 +30,7 @@ public class DBMonopolyContainer(IDataBase db) : IDataBase
         return context;
     }
 
-    public IUpgradeableDBContext UpgradeableRead()
+    public IUpgradeableDbContext UpgradeableRead()
     {
         _locker.EnterReadLock();
         var context = _db.UpgradeableRead();
@@ -38,7 +38,7 @@ public class DBMonopolyContainer(IDataBase db) : IDataBase
         return context;
     }
 
-    public IDBContext Write()
+    public IDbContext Write()
     {
         _locker.EnterReadLock();
         var context = _db.Write();
@@ -46,9 +46,9 @@ public class DBMonopolyContainer(IDataBase db) : IDataBase
         return context;
     }
 
-    public IDBContext Monopoly()
+    public IDbContext Monopoly()
     {
         _locker.EnterWriteLock();
-        return new DBContextProxy(_db.Write(), _locker.ExitWriteLock);
+        return new DbContextProxy(_db.Write(), _locker.ExitWriteLock);
     }
 }

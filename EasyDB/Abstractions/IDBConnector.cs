@@ -2,7 +2,7 @@
 
 namespace EasyDb.Abstractions;
 
-public interface IDBConnector
+public interface IDbConnector
 {
     DbConnection Connect();
 }

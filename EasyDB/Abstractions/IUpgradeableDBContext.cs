@@ -1,7 +1,7 @@
 ﻿namespace EasyDb.Abstractions;
 
-public interface IUpgradeableDBContext : IDBContext
+public interface IUpgradeableDbContext : IDbContext
 {
-    IDBContext Write();
-    IDBContext Transaction();
+    IDbContext Write();
+    IDbContext Transaction();
 }

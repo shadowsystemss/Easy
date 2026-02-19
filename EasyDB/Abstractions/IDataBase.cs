@@ -2,8 +2,8 @@
 
 public interface IDataBase : IDisposable
 {
-    IDBContext Read();
-    IDBContext Write();
-    IUpgradeableDBContext UpgradeableRead();
-    IDBContext Transaction();
+    IDbContext Read();
+    IDbContext Write();
+    IUpgradeableDbContext UpgradeableRead();
+    IDbContext Transaction();
 }

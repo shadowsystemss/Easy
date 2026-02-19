@@ -5,7 +5,7 @@ using System.Data.Common;
 
 namespace EasyDb.Advanced.Tables;
 
-public class SetDBTable(IDataBase db, string tableName) // Класс для упрощенья создания списков
+public class SetDbTable(IDataBase db, string tableName) // Класс для упрощенья создания списков
 {
     protected readonly IDataBase _db = db;
     protected readonly string _tableName = tableName;
@@ -23,7 +23,7 @@ public class SetDBTable(IDataBase db, string tableName) // Класс для у�
 
     public void Add(string text, int? id = null)
     {
-        using IDBContext context = _db.Write();
+        using IDbContext context = _db.Write();
         using DbCommand command = context
             .CreateCommand()
             .With("@text", text);
@@ -39,7 +39,7 @@ public class SetDBTable(IDataBase db, string tableName) // Класс для у�
 
     public void Add(IList<string> data)
     {
-        using IDBContext context = _db.Write();
+        using IDbContext context = _db.Write();
         using DbCommand command = context.CreateCommand($"INSERT INTO {_tableName}(text) VALUES(@text)");
 
         DbParameter textParameter = command.CreateParameter();
@@ -55,7 +55,7 @@ public class SetDBTable(IDataBase db, string tableName) // Класс для у�
 
     public void Replace(IList<string> data)
     {
-        using IDBContext context = _db.Write();
+        using IDbContext context = _db.Write();
         using DbCommand command = context
             .CreateCommand($"REPLACE INTO {_tableName}(id, text) VALUES(@id, @text)");
 
@@ -77,7 +77,7 @@ public class SetDBTable(IDataBase db, string tableName) // Класс для у�
 
     public void Update(int id, string text)
     {
-        using IDBContext context = _db.Write();
+        using IDbContext context = _db.Write();
         using DbCommand command = context
             .CreateCommand($"UPDATE {_tableName} SET text = @text WHERE id = @id")
             .With("@id", id)
@@ -90,7 +90,7 @@ public class SetDBTable(IDataBase db, string tableName) // Класс для у�
 
     public void RemoveByText(string text)
     {
-        using IDBContext context = _db.Write();
+        using IDbContext context = _db.Write();
         using DbCommand command = context.CreateCommand($"DELETE FROM {_tableName} WHERE text = @text").With("@text", text);
         command.ExecuteNonQuery();
     }
@@ -102,13 +102,13 @@ public class SetDBTable(IDataBase db, string tableName) // Класс для у�
         => (int?)_db.Scalar($"SELECT id FROM {_tableName} WHERE text = '{text.Replace("'", "''")}'");
 
     public List<int>? GetIds(int limit = 100, int offset = 0)
-        => _db.ReaderWrapper($"SELECT id FROM {_tableName} LIMIT {limit} OFFSET {offset}", reader => reader.GetScalars<int>().ToList());
+        => _db.Read($"SELECT id FROM {_tableName} LIMIT {limit} OFFSET {offset}", reader => reader.GetScalars<int>().ToList());
 
     public List<string>? GetList(int limit = 100, int offset = 0)
-        => _db.ReaderWrapper($"SELECT text FROM {_tableName} LIMIT {limit} OFFSET {offset}", reader => reader.GetScalars<string>().ToList());
+        => _db.Read($"SELECT text FROM {_tableName} LIMIT {limit} OFFSET {offset}", reader => reader.GetScalars<string>().ToList());
 
     public Dictionary<int, string>? GetDictionary(int limit = 100, int offset = 0)
-        => _db.ReaderWrapper($"SELECT * FROM {_tableName} LIMIT {limit} OFFSET {offset}", DBReaderExtensions.GetDictionary<int, string>);
+        => _db.Read($"SELECT * FROM {_tableName} LIMIT {limit} OFFSET {offset}", DbReaderExtensions.GetDictionary<int, string>);
 
     public int Count()
         => Convert.ToInt32(_db.Scalar("SELECT COUNT(*) FROM " + _tableName) ?? 0);

@@ -3,11 +3,11 @@ using System.Data.Common;
 
 namespace EasyDb.Models;
 
-public class UpgradeableDBContext(IDataBase db, DbConnection connection, Action? dispose) : DBContext(connection, dispose), IUpgradeableDBContext
+public class UpgradeableDbContext(IDataBase db, DbConnection connection, Action? dispose) : DbContext(connection, dispose), IUpgradeableDbContext
 {
     protected IDataBase _db = db;
 
-    public IDBContext Write() => _db.Write();
+    public IDbContext Write() => _db.Write();
 
-    public IDBContext Transaction() => _db.Transaction();
+    public IDbContext Transaction() => _db.Transaction();
 }

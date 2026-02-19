@@ -3,9 +3,9 @@ using System.Data.Common;
 
 namespace EasyDb.Advanced.Models;
 
-public class DBContextProxy(IDBContext context, Action? dispose) : IDBContext
+public class DbContextProxy(IDbContext context, Action? dispose) : IDbContext
 {
-    private readonly IDBContext _context = context;
+    private readonly IDbContext _context = context;
     protected Action? _dispose = dispose;
 
     public DbCommand CreateCommand()

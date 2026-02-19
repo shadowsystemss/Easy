@@ -2,7 +2,7 @@
 
 namespace EasyDb.Abstractions;
 
-public interface IDBContext : IDisposable
+public interface IDbContext : IDisposable
 {
     DbCommand CreateCommand();
 }

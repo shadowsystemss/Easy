@@ -8,31 +8,31 @@ public class OneTimeDatabase(Func<DbConnection> connectionFactory) : IDataBase
 {
     protected Func<DbConnection> _connectionFactory = connectionFactory;
 
-    public OneTimeDatabase(IDBConnector connector)
+    public OneTimeDatabase(IDbConnector connector)
         : this(connector.Connect) { }
 
     public void Dispose() => GC.SuppressFinalize(this);
 
-    private DBContext Connect()
+    private DbContext Connect()
     {
         DbConnection connection = _connectionFactory.Invoke();
         connection.Open();
-        return new DBContext(connection, () => { connection.Close(); connection.Dispose(); });
+        return new DbContext(connection, () => { connection.Close(); connection.Dispose(); });
     }
 
-    public IDBContext Read() => Connect();
+    public IDbContext Read() => Connect();
 
-    public IDBContext Write() => Connect();
+    public IDbContext Write() => Connect();
 
-    public IUpgradeableDBContext UpgradeableRead()
+    public IUpgradeableDbContext UpgradeableRead()
     {
         DbConnection connection = _connectionFactory.Invoke();
-        return new UpgradeableDBContext(this, connection, () => { connection.Close(); connection.Dispose(); });
+        return new UpgradeableDbContext(this, connection, () => { connection.Close(); connection.Dispose(); });
     }
 
-    public IDBContext Transaction()
+    public IDbContext Transaction()
     {
         DbConnection connection = _connectionFactory.Invoke();
-        return new TransactionDBContext(connection, () => { connection.Close(); connection.Dispose(); });
+        return new TransactionDbContext(connection, () => { connection.Close(); connection.Dispose(); });
     }
 }

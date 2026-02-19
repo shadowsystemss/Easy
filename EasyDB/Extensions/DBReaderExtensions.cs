@@ -2,7 +2,7 @@
 
 namespace EasyDb.Extensions;
 
-public static class DBReaderExtensions
+public static class DbReaderExtensions
 {
     public static IEnumerable<T> GetScalars<T>(this DbDataReader reader, Func<DbDataReader, T> generator)
     {

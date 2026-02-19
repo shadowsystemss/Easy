@@ -2,7 +2,7 @@
 
 namespace EasyDb.Models;
 
-public class TransactionDBContext(DbConnection connection, Action? dispose) : DBContext(connection, dispose)
+public class TransactionDbContext(DbConnection connection, Action? dispose) : DbContext(connection, dispose)
 {
     public DbTransaction Transaction { get; } = connection.BeginTransaction();
 
