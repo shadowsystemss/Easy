@@ -3,13 +3,14 @@ using System.Data.Common;
 
 namespace EasyDb.Advanced.Models;
 
-public class DbContextProxy(IDbContext context, Action? dispose) : IDbContext
+public class DbContextMonopolyProxy(IDbContext context, Action? dispose) : IDbContext
 {
     private readonly IDbContext _context = context;
-    protected Action? _dispose = dispose;
+    private readonly Action? _dispose = dispose;
 
     public DbCommand CreateCommand()
         => _context.CreateCommand();
+
     public virtual void Dispose()
     {
         _context.Dispose();

@@ -8,47 +8,38 @@ public class DbMonopolyContainer(IDataBase db) : IDataBase
     private readonly IDataBase _db = db;
     private readonly ReaderWriterLockSlim _locker = new();
 
-    public void Dispose()
-    {
-        _db.Dispose();
-        GC.SuppressFinalize(this);
-    }
-
     public IDbContext Read()
     {
         _locker.EnterReadLock();
-        var context = _db.Read();
-        _locker.ExitReadLock();
-        return context;
-    }
-
-    public IDbContext Transaction()
-    {
-        _locker.EnterReadLock();
-        var context = _db.Transaction();
-        _locker.ExitReadLock();
-        return context;
-    }
-
-    public IUpgradeableDbContext UpgradeableRead()
-    {
-        _locker.EnterReadLock();
-        var context = _db.UpgradeableRead();
-        _locker.ExitReadLock();
-        return context;
+        return new DbContextMonopolyProxy(_db.Read(), _locker.ExitReadLock);
     }
 
     public IDbContext Write()
     {
-        _locker.EnterReadLock();
-        var context = _db.Write();
-        _locker.ExitReadLock();
-        return context;
+        _locker.EnterWriteLock();
+        return new DbContextMonopolyProxy(_db.Write(), _locker.ExitWriteLock);
     }
 
-    public IDbContext Monopoly()
+    public IDbContext Transaction()
     {
         _locker.EnterWriteLock();
-        return new DbContextProxy(_db.Write(), _locker.ExitWriteLock);
+        return new DbContextMonopolyProxy(_db.Transaction(), _locker.ExitWriteLock);
+    }
+
+    public IUpgradeableDbContext UpgradeableRead()
+    {
+        _locker.EnterUpgradeableReadLock();
+        return new UpgradableDbContextMonopolyProxy(
+            _db.UpgradeableRead(),
+            _locker.ExitUpgradeableReadLock,
+            _locker.EnterWriteLock,
+            _locker.ExitWriteLock);
+    }
+
+    public void Dispose()
+    {
+        _db.Dispose();
+        _locker.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

@@ -1,115 +1,147 @@
 ﻿using EasyDb.Abstractions;
 using EasyDb.Extensions;
 using EasyDb.Models;
+using System.Data;
 using System.Data.Common;
 
 namespace EasyDb.Advanced.Tables;
 
-public class SetDbTable(IDataBase db, string tableName) // Класс для упрощенья создания списков
+public class SetDbTable(IDataBase db, string tableName)
 {
     protected readonly IDataBase _db = db;
     protected readonly string _tableName = tableName;
 
-    public void Create() => _db.Write($"""
+    public int Create() => _db.Write($"""
         CREATE TABLE IF NOT EXISTS {_tableName} (
             id INTEGER PRIMARY KEY,
             text TEXT UNIQUE NOT NULL
         )
         """);
 
-    public void Drop() => _db.Write($"DROP TABLE IF EXISTS {_tableName}");
+    public int Drop() => _db.Write($"DROP TABLE IF EXISTS {_tableName}");
 
     public virtual void Fill() { }
 
-    public void Add(string text, int? id = null)
+    public int Add(string text, int? id = null)
     {
         using IDbContext context = _db.Write();
         using DbCommand command = context
             .CreateCommand()
             .With("@text", text);
+
         if (id.HasValue)
         {
-            command.CommandText = $"REPLACE INTO {_tableName}(id, text) VALUES(@id, @text)";
-            command.AddParameter(text, id.Value);
+            command.CommandText = $"""
+                REPLACE INTO
+                {_tableName} (id, text)
+                VALUES (@id, @text)
+                """;
+            command.AddParameter("@id", id.Value);
         }
         else
-            _db.Write($"INSERT OR IGNORE INTO {_tableName}(text) VALUES(@text)");
-        command.ExecuteNonQuery();
+            command.CommandText = $"""
+                INSERT OR IGNORE INTO
+                {_tableName} (text)
+                VALUES (@text)
+                """;
+
+        return command.ExecuteNonQuery();
     }
 
-    public void Add(IList<string> data)
+    public void Add(IEnumerable<string> items)
     {
         using IDbContext context = _db.Write();
-        using DbCommand command = context.CreateCommand($"INSERT INTO {_tableName}(text) VALUES(@text)");
+        using DbCommand command = context.CreateCommand($"""
+            INSERT INTO
+            {_tableName} (text)
+            VALUES (@text)
+            """);
 
-        DbParameter textParameter = command.CreateParameter();
-        textParameter.ParameterName = "@text";
-        command.Parameters.Add(textParameter);
-
-        foreach (string item in data)
+        DbParameter textParameter = command.AddParameter("@text", DbType.String);
+        foreach (string item in items)
         {
             textParameter.Value = item;
             command.ExecuteNonQuery();
         }
     }
 
-    public void Replace(IList<string> data)
+    public void Replace(IEnumerable<string> items)
     {
         using IDbContext context = _db.Write();
-        using DbCommand command = context
-            .CreateCommand($"REPLACE INTO {_tableName}(id, text) VALUES(@id, @text)");
+        using DbCommand command = context.CreateCommand($"""
+            REPLACE INTO
+            {_tableName} (id, text)
+            VALUES (@id, @text)
+            """);
 
-        DbParameter idParameter = command.CreateParameter();
-        idParameter.ParameterName = "@id";
-        command.Parameters.Add(idParameter);
+        int i = 0;
+        DbParameter idParameter = command.AddParameter("@id", DbType.Int32);
+        DbParameter textParameter = command.AddParameter("@text", DbType.String);
 
-        DbParameter textParameter = command.CreateParameter();
-        textParameter.ParameterName = "@text";
-        command.Parameters.Add(textParameter);
-
-        for (int i = 0; i < data.Count; i++)
+        foreach (string item in items)
         {
-            idParameter.Value = i;
-            textParameter.Value = data[i];
+            idParameter.Value = i++;
+            textParameter.Value = item;
             command.ExecuteNonQuery();
         }
     }
 
-    public void Update(int id, string text)
-    {
-        using IDbContext context = _db.Write();
-        using DbCommand command = context
-            .CreateCommand($"UPDATE {_tableName} SET text = @text WHERE id = @id")
-            .With("@id", id)
-            .With("@text", text);
-        command.ExecuteNonQuery();
-    }
+    public int Update(int id, string text) => _db.Write($"""
+            UPDATE {_tableName}
+            SET text = @text
+            WHERE id = @id
+            """, ("@id", id), ("@text", text));
 
-    public void RemoveById(int id)
-        => _db.Write($"DELETE FROM {_tableName} WHERE id = {id}");
+    public int RemoveById(int id) => _db.Write($"""
+        DELETE FROM {_tableName}
+        WHERE id = @id
+        """, ("@id", id));
 
-    public void RemoveByText(string text)
-    {
-        using IDbContext context = _db.Write();
-        using DbCommand command = context.CreateCommand($"DELETE FROM {_tableName} WHERE text = @text").With("@text", text);
-        command.ExecuteNonQuery();
-    }
+    public int RemoveByText(string text) => _db.Write($"""
+        DELETE FROM {_tableName} WHERE text = @text
+        """, ("@text", text));
 
-    public string? GetTextById(int id)
-        => (string?)_db.Scalar($"SELECT text FROM {_tableName} WHERE id = {id}");
+    public string? GetTextById(int id) => (string?)_db.Scalar($"""
+        SELECT text
+        FROM {_tableName}
+        WHERE id = @id
+        """, ("@id", id));
 
-    public int? GetIdByText(string text)
-        => (int?)_db.Scalar($"SELECT id FROM {_tableName} WHERE text = '{text.Replace("'", "''")}'");
+    public int? GetIdByText(string text) => (int?)_db.Scalar($"""
+        SELECT id
+        FROM {_tableName}
+        WHERE text = @text
+        """, ("@text", text));
 
-    public List<int>? GetIds(int limit = 100, int offset = 0)
-        => _db.Read($"SELECT id FROM {_tableName} LIMIT {limit} OFFSET {offset}", reader => reader.GetScalars<int>().ToList());
+    public List<int>? GetIds(int limit = 100, int offset = 0) => _db.Read($"""
+            SELECT id
+            FROM {_tableName}
+            LIMIT @limit
+            OFFSET @offset
+            """, reader => reader.GetScalars<int>().ToList(),
+            ("@limit", limit),
+            ("@offset", offset));
 
-    public List<string>? GetList(int limit = 100, int offset = 0)
-        => _db.Read($"SELECT text FROM {_tableName} LIMIT {limit} OFFSET {offset}", reader => reader.GetScalars<string>().ToList());
+    public List<string>? GetList(int limit = 100, int offset = 0) => _db.Read($"""
+            SELECT text
+            FROM {_tableName}
+            LIMIT @limit
+            OFFSET @offset
+            """, reader => reader.GetScalars<string>().ToList(),
+            ("@limit", limit),
+            ("@offset", offset));
 
-    public Dictionary<int, string>? GetDictionary(int limit = 100, int offset = 0)
-        => _db.Read($"SELECT * FROM {_tableName} LIMIT {limit} OFFSET {offset}", DbReaderExtensions.GetDictionary<int, string>);
+    public Dictionary<int, string>? GetDictionary(int limit = 100, int offset = 0) => _db.Read($"""
+        SELECT *
+        FROM {_tableName}
+        LIMIT @limit
+        OFFSET @offset
+        """, DbReaderExtensions.GetDictionary<int, string>,
+        ("@limit", limit),
+        ("@offset", offset));
 
-    public int Count()
-        => Convert.ToInt32(_db.Scalar("SELECT COUNT(*) FROM " + _tableName) ?? 0);
+    public int Count() => (int?)_db.Scalar($"""
+        SELECT COUNT(*)
+        FROM {_tableName}
+        """) ?? 0;
 }
