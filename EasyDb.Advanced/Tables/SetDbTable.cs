@@ -1,6 +1,5 @@
 ﻿using EasyDb.Abstractions;
 using EasyDb.Extensions;
-using EasyDb.Models;
 using System.Data;
 using System.Data.Common;
 
